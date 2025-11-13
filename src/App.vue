@@ -94,8 +94,10 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
+import { useQuasar } from 'quasar';
 
-// --- Función de Ayuda para Inicializar el Carrito ---
+const $q = useQuasar();
+
 const getInitialCart = () => {
   const savedCart = localStorage.getItem('carrito');
   if (savedCart) {
@@ -112,14 +114,14 @@ const getInitialCart = () => {
 // Estado Reactivo (ref)
 const carrito = ref(getInitialCart());
 
-// Productos de ejemplo
+// Productos
 const products = ref([
-  { id: 1, name: 'Producto 1', price: 10, image: '/vite.svg' },
-  { id: 2, name: 'Producto 2', price: 20, image: '/vite.svg' },
-  { id: 3, name: 'Producto 3', price: 30, image: '/vite.svg' },
-  { id: 4, name: 'Producto 4', price: 40, image: '/vite.svg' },
-  { id: 5, name: 'Producto 5', price: 50, image: '/vite.svg' },
-  { id: 6, name: 'Producto 6', price: 60, image: '/vite.svg' },
+  { id: 1, name: 'Mouse', price: 100, image: 'https://cdnx.jumpseller.com/tecnoboss_chile/image/15634676/resize/1200/1200?1616941295' },
+  { id: 2, name: 'Teclado', price: 200, image: 'https://pngimg.com/uploads/keyboard/keyboard_PNG101862.png' },
+  { id: 3, name: 'Audifonos', price: 300, image: 'https://png.pngtree.com/png-vector/20240208/ourmid/pngtree-transparent-background-true-wireless-headphones-3d-stereo-headset-fo-ldable-gaming-png-image_11730843.png' },
+  { id: 4, name: 'Microfono', price: 400, image: 'https://tse1.mm.bing.net/th/id/OIP.T5JXKPlvbKlVl_ZQMNbfaQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3' },
+  { id: 5, name: 'Monitor', price: 500, image: 'https://tse3.mm.bing.net/th/id/OIP.kO6Sv_K23W_woagEMroQ3gHaFK?rs=1&pid=ImgDetMain&o=7&rm=3' },
+  { id: 6, name: 'Gabinete', price: 600, image: 'https://png.pngtree.com/png-vector/20240528/ourmid/pngtree-unveiling-the-future-ultimate-modern-gaming-pc-experience-elevate-your-with-png-image_12530213.png' },
 ]);
 
 
@@ -148,16 +150,31 @@ watch(carrito, (newCart) => {
   // Guardar en localStorage
   localStorage.setItem('carrito', JSON.stringify(newCart));
 
-  // Mostrar en consola cuando el carrito cambia
-  console.log('Carrito actualizado:', newCart);
+  // Mostrar notificación cuando el carrito cambia
+  $q.notify({
+    message: 'Carrito actualizado',
+    color: 'positive',
+    icon: 'shopping_cart',
+    position: 'top-right',
+    timeout: 2000
+  });
 }, { deep: true });
 
 // Watch para mostrar alerta cuando el total supera $1000
 watch(totalPrice, (newTotal) => {
   if (newTotal > 1000) {
     console.warn(`⚠️ ALERTA: El total del carrito ($${newTotal.toFixed(2)}) supera los $1000`);
-    // Alerta visual para el usuario
-    alert(`¡Atención! El total de tu carrito es $${newTotal.toFixed(2)}, que supera los $1000`);
+    // Notificación
+    $q.notify({
+      message: `¡Atención! El total de tu carrito es $${newTotal.toFixed(2)}, que supera los $1000`,
+      color: 'warning',
+      icon: 'warning',
+      position: 'top',
+      timeout: 5000,
+      actions: [
+        { label: 'Cerrar', color: 'white' }
+      ]
+    });
   }
 });
 </script>
@@ -214,8 +231,8 @@ watch(totalPrice, (newTotal) => {
 }
 
 .product-image {
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
   object-fit: cover;
   margin-bottom: 10px;
 }
